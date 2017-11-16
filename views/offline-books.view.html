@@ -1,0 +1,34 @@
+<script id="offline.books" type="text/x-handlebars-template">
+    <div id="bookDisplay" class="ui four column relaxed grid container">
+    {{#each books}}
+    <div class="column" id='{{this.id}}'>
+      <div class="ui fluid card">
+        <div class="image">
+          <img src="{{this.volumeInfo.imageLinks.thumbnail}}">
+        </div>
+        <div class="content">
+            {{#if this.accessInfo.pdf}}
+          <a class="header titleBook" data-url="{{this.accessInfo.webReaderLink}}" data-filename="{{this.accessInfo.pdf.downloadLink}}">{{this.volumeInfo.title}}</a>
+          {{else}}
+          <a class="header titleBook" data-url="{{this.accessInfo.webReaderLink}}" data-filename="{{this.accessInfo.epub.downloadLink}}">{{this.volumeInfo.title}}</a>        
+          {{/if}}
+        </div>
+        <div class="extra content">
+          {{#if this.accessInfo.pdf}}
+            <a href="{{this.accessInfo.pdf.downloadLink}}" data-url="{{this.accessInfo.pdf.downloadLink}}" data-filetype='pdf' class="downloadLink">Download</a>
+          {{else}}
+            <a href="{{this.accessInfo.epub.downloadLink}}" data-url="{{this.accessInfo.pdf.downloadLink}}" data-filetype='epub' class="downloadLink">Download</a>
+          {{/if}}
+          <div class="ui progress" id="progressBar" style="display:none" data-value="0" data-total="0">
+            <div class="bar">
+              <div class="progress"></div>
+            </div>
+            <div class="label">Dowloading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+    </div>
+    <div class="ui divider"></div>
+  </script>

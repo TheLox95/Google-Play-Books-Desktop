@@ -1,0 +1,20 @@
+<script id="bookinfo" type="text/x-handlebars-template">
+    <div class='ui basic middle aligned center aligned grid'>
+        <div class="ui five column grid container">    
+            <img src="{{thumbnail}}">
+            <h2 class="header" >{{title}}</h2>
+            <div class="ui small vertical buttons">
+                <a data-url="{{webReaderUrl}}" class="ui button onlineReader">
+                    Read 
+                    Online
+                </a>
+                {{#if this.isDownloaded}}
+                <a data-filename="{{downloadUrl}}" class="ui button offlineReader">
+                    Read 
+                    Offline
+                </a>
+                {{/if}}            
+            </div>
+        </div>
+    </div>
+</script>

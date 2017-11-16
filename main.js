@@ -1,6 +1,8 @@
 const electron = require('electron')
+const DownloadSuite = require('./src/DownloadSuite').DownloadSuite
 // Module to control application life.
 const app = electron.app
+app.showExitPrompt = true
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
@@ -11,17 +13,21 @@ const url = require('url')
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-function createWindow () {
+function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({ width: 1000, height: 1000, title: 'Google Play Books Desktop'})
+  mainWindow.setMenu(null);
+  const downloadSuite = new DownloadSuite(mainWindow);
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
+    pathname: path.join(__dirname, 'views/index.html'),
     protocol: 'file:',
     slashes: true
   }))
 
+  mainWindow.webContents.session.on("page-title-updated", event => event.preventDefault());
+  mainWindow.webContents.session.on("will-download", downloadSuite.queueDownload);
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
@@ -32,6 +38,8 @@ function createWindow () {
     // when you should delete the corresponding element.
     mainWindow = null
   })
+
+  mainWindow.on('close', downloadSuite.interuptDownload)
 }
 
 // This method will be called when Electron has finished

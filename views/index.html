@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="../node_modules/photonkit/dist/css/photon.css">
+  <link rel="stylesheet" href="../node_modules/semantic-ui/dist/semantic.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+  <div class="window">
+  <div class="window-content">
+    <div class="pane-group">
+      <div class="pane-sm sidebar" id='sidebar'></div>
+      <div class="pane" id="includedContent">
+      </div>
+    </div>
+  </div>
+</div>
+  <div id=''></div>
+  
+  <script>
+    window.$ = window.jQuery = require('jquery');
+  </script>
+  <script async defer src="https://apis.google.com/js/client.js"></script>
+  <script async defer src="../node_modules/semantic-ui/dist/semantic.min.js"></script>
+
+  <script>
+    require('../renderer.js')
+      // You can also require other files to run in this process
+  </script>
+
+</body>
+
+</html>

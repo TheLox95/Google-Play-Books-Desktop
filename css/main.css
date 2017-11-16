@@ -1,0 +1,22 @@
+#sidebar{
+    max-width: 320px !important;
+    min-width: 250px !important;
+}
+
+h1, h2, h3, h4, h5{
+    word-break: break-all;
+}
+
+#logingView{
+    margin: 0;
+    padding: 0;
+}
+
+#loginBox{
+    margin-top: 200px;
+    max-width: 450px;
+}
+
+#loginButton{
+    margin: 10px;
+}

@@ -1,0 +1,58 @@
+<script id="books" type="text/x-handlebars-template">
+  <div class="ui vertically divided grid basic segment">
+      {{#if offline-books}}
+  <div id="bookDisplay" class="ui five column grid container">
+      <h2 class="ui header">Downloaded Books</h2>  
+  {{#each offline-books}}
+  <div class="column bookItem" id='{{this.id}}'>
+    <div class="ui fluid card">
+      <div class="image">
+        <img src="{{this.thumbnail}}">
+      </div>
+      <div class="content">
+        <a class="header titleBook" data-url="{{this.webReaderUrl}}" data-filename="{{this.downloadUrl}}">{{this.title}}</a>        
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>
+{{/if}}
+{{#if books}}
+<div id="bookDisplay" class="ui five column grid container">    
+    <h2 class="ui header">Online Books</h2>
+  {{#each books}}
+  <div class="column bookItem" id='{{this.id}}'>
+    <div class="ui fluid card">
+      <div class="image">
+        <img src="{{this.thumbnail}}">
+      </div>
+      <div class="content">
+          {{#if this.accessInfo.pdf}}
+        <a class="header titleBook" data-url="{{this.webReaderUrl}}" data-filename="{{this.downloadUrl}}">{{this.title}}</a>
+        {{else}}
+        <a class="header titleBook" data-url="{{this.webReaderUrl}}" data-filename="{{this.downloadUrl}}">{{this.title}}</a>        
+        {{/if}}
+      </div>
+      <div class="extra content">
+        {{#if this.accessInfo.pdf}}
+          <a href="{{this.downloadUrl}}" data-url="{{this.downloadUrl}}" data-id="{{this.id}}" data-filetype='pdf' class="downloadLink">Download</a>
+        {{else}}
+          <a href="{{this.downloadUrl}}" data-url="{{this.downloadUrl}}" data-id="{{this.id}}" data-filetype='epub' class="downloadLink">Download</a>
+        {{/if}}
+        <div class="ui progress" id="progressBar" style="display:none" data-value="0" data-total="0">
+          <div class="bar">
+            <div class="progress"></div>
+          </div>
+          <div class="label">Dowloading...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+  </div>
+{{/if}}
+  <button data-index="{{index}}" class="ui button fluid" id="loadMore">
+    Load More
+  </button>
+</div>
+</script>
