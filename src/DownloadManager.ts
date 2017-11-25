@@ -47,28 +47,30 @@ export class DownloadManager {
             const out = createWriteStream(this._fileRoute);
             const req = get(bookUrl);
 
-            req.pipe(out);
+            out.on('open', fd => {
+                req.pipe(out);
 
-            req.on('response', (data: IncomingMessage) => total_bytes = parseInt(data.headers['content-length']));
+                req.on('response', (data: IncomingMessage) => total_bytes = parseInt(data.headers['content-length']));
 
-            req.on('data', (chunk: Buffer) => {
-                received_bytes += chunk.length;
-                defaultMsg.percent = received_bytes
-                defaultMsg.size = total_bytes
-                this._notify(defaultMsg);
+                req.on('data', (chunk: Buffer) => {
+                    received_bytes += chunk.length;
+                    defaultMsg.percent = received_bytes
+                    defaultMsg.size = total_bytes
+                    this._notify(defaultMsg);
+                });
+
+                req.on('end', () => {
+                    console.log("File succesfully downloaded");
+                    this._downloadIsComplete = true;
+
+                    defaultMsg.isDone = true;
+                    defaultMsg.state = 'finished'
+
+                    this._notify(defaultMsg);
+                });
+
+                req.on('error', (err: Error) => this._cleanFileOnError(this._fileRoute));
             });
-
-            req.on('end', () => {
-                console.log("File succesfully downloaded");
-                this._downloadIsComplete = true;
-
-                defaultMsg.isDone = true;
-                defaultMsg.state = 'finished'
-
-                this._notify(defaultMsg);
-            });
-
-            req.on('error', (err: Error) => this._cleanFileOnError(this._fileRoute));
         } catch (error) {
             console.log(error);
         }
