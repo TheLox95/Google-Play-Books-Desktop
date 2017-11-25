@@ -1,6 +1,6 @@
 import { app, App, dialog, remote, DownloadItem, WebContents, BrowserWindow } from 'electron'
 import { IncomingMessage } from 'http'
-import { createWriteStream, unlinkSync, writeFile } from 'fs'
+import { createWriteStream, unlinkSync, writeFile, existsSync } from 'fs'
 import { URL } from 'url'
 import { get } from 'request'
 import { join } from 'path'
@@ -109,7 +109,9 @@ export class DownloadManager {
     }
 
     private _cleanFileOnError(route: string) {
-        unlinkSync(this._fileRoute)
+        if (existsSync(route) === true) {
+            unlinkSync(this._fileRoute);
+        }
     }
 
     private _getRoute(item: DownloadItem) {
