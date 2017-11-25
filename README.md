@@ -10,3 +10,9 @@ This app is as desktop application for the **Google Play** api and service made 
 ## To build the installer
 - On gitbash paste `https://github.com/TheLox95/Google-Play-Books-Desktop.git`
 - Run `npm install` and `npm run dist`
+
+## Images
+
+![Book list](https://i.imgur.com/Hkk3ZLN.png)
+
+![Read Online and Offline](https://i.imgur.com/87BbAT9.png)
