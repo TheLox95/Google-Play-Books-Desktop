@@ -1,6 +1,6 @@
 import { app, App, dialog, remote, DownloadItem, WebContents, BrowserWindow } from 'electron'
 import { IncomingMessage } from 'http'
-import { createWriteStream, unlinkSync, writeFile, existsSync } from 'fs'
+import { createWriteStream, unlinkSync, writeFile, existsSync, mkdirSync} from 'fs'
 import { URL } from 'url'
 import { get } from 'request'
 import { join } from 'path'
@@ -42,6 +42,10 @@ export class DownloadManager {
                 size: total_bytes,
                 isDone: false,
                 state: 'donwloading'
+            }
+
+            if (existsSync(`${app.getAppPath()}, books/`) === false) {
+                mkdirSync(`${app.getAppPath()}, books/`);
             }
 
             const out = createWriteStream(this._fileRoute);

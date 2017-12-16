@@ -16,6 +16,8 @@ interface JQueryProgress extends JQuery<HTMLElement> {
     progress(name: string, value: any): void;
 }
 
+new Server().listen()
+
 const navigatorHelper = new Navigation(`includedContent`);
 let sidebar;
 
