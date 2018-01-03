@@ -6,7 +6,7 @@ export class DownloadSuite{
     
     constructor(private _window: BrowserWindow) { }
     
-    queueDownload = (event: Event, item: DownloadItem, webContents: WebContents) => {
+    queueDownload = (event: Event, item: DownloadItem, webContents: WebContents) => {     
         event.preventDefault();        
         if (this._downloadManagerList.has(item.getURLChain()[0]) === false) {
             const downloadManager = new DownloadManager(this._window)
@@ -21,4 +21,4 @@ export class DownloadSuite{
             manager.downloadWillInterrupt(e)
         }
     }
-}
+}      

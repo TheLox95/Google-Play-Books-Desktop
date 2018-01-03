@@ -16,10 +16,12 @@ const Navigation_1 = require("./src/Navigation");
 const remote = require('electron').remote;
 const ipcRenderer = require('electron').ipcRenderer;
 const Store = require("electron-store");
-const configStore = new Store('config');
+const configStore = new Store({ name: `config` });
 const DaoBook_1 = require("./src/DaoBook");
 const ViewHelper_1 = require("./ViewHelper");
 const ConnectionManager_1 = require("./src/ConnectionManager");
+const Server_1 = require("./src/Server");
+new Server_1.Server().listen();
 const navigatorHelper = new Navigation_1.Navigation(`includedContent`);
 let sidebar;
 ConnectionManager_1.ConnectionManager.thereIsInternetConnection()

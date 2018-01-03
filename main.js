@@ -17,7 +17,8 @@ function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 1000, height: 1000, title: 'Google Play Books Desktop'})
   mainWindow.setMenu(null);
-  const downloadSuite = new DownloadSuite(mainWindow);
+  const downloadSuite = new DownloadSuite(mainWindow);       
+  
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({

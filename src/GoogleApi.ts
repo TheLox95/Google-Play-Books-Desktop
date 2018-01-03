@@ -2,7 +2,7 @@ import Store = require('electron-store');
 import { Server } from './Server';
 import { OAUTHTOKEN, CLIENT_ID, CLIENT_SECRET, LOCAL_SERVER } from './Credentials';
 import { post } from 'request';
-const configStore = new Store('config');
+const configStore = new Store({name: `config`});
 
 interface OAuthAccessHeader {
     code?: string

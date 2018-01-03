@@ -6,7 +6,7 @@ import { Navigation } from './src/Navigation';
 const remote = require('electron').remote;
 const ipcRenderer = require('electron').ipcRenderer
 import Store = require('electron-store');
-const configStore = new Store('config');
+const configStore = new Store({name : `config`});
 import { DaoBook } from './src/DaoBook'
 import { onBookItemClick, onDownloadButtonClick, onTitleBookClick, onLoadMoreButtonClick } from './ViewHelper'
 import { ConnectionManager } from './src/ConnectionManager';

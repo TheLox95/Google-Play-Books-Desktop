@@ -1,10 +1,11 @@
 import { app, App, dialog, remote, DownloadItem, WebContents, BrowserWindow } from 'electron'
 import { IncomingMessage } from 'http'
-import { createWriteStream, unlinkSync, writeFile, existsSync, mkdirSync} from 'fs'
+import { createWriteStream, unlinkSync, writeFileSync, existsSync, mkdirSync} from 'fs'
 import { URL } from 'url'
 import { get } from 'request'
 import { join } from 'path'
 import { DaoBook } from './DaoBook'
+import { mkdir } from 'original-fs';
 
 
 interface myApp extends App {
@@ -23,8 +24,9 @@ interface DownloadBookInfo {
 
 export class DownloadManager {
     private _downloadIsComplete = false
-    private _fileRoute: string
+    private _bookTitle: string
     private _bookId: string = ''
+    private _booksFolderRoute = join(app.getPath("documents"), `GooglePlayBooks`);
 
     constructor(private _window: BrowserWindow) { }
 
@@ -35,6 +37,7 @@ export class DownloadManager {
 
         try {
             this._getRoute(item)
+            this._createBooksFolderIfNotExits();
 
             let defaultMsg = {
                 id: this._bookId,
@@ -44,12 +47,12 @@ export class DownloadManager {
                 state: 'donwloading'
             }
 
-            if (existsSync(`${app.getAppPath()}, books/`) === false) {
-                mkdirSync(`${app.getAppPath()}, books/`);
+            if (existsSync(join(this._booksFolderRoute, this._bookTitle)) === false) {
+                writeFileSync(join(this._booksFolderRoute, this._bookTitle), '');
             }
 
-            const out = createWriteStream(this._fileRoute);
-            const req = get(bookUrl);
+            const out = createWriteStream(join(this._booksFolderRoute, this._bookTitle));
+            const req = await get(bookUrl);
 
             out.on('open', fd => {
                 req.pipe(out);
@@ -73,7 +76,7 @@ export class DownloadManager {
                     this._notify(defaultMsg);
                 });
 
-                req.on('error', (err: Error) => this._cleanFileOnError(this._fileRoute));
+                req.on('error', (err: Error) => this._cleanFileOnError(this._booksFolderRoute, this._bookTitle));
             });
         } catch (error) {
             console.log(error);
@@ -106,7 +109,7 @@ export class DownloadManager {
         }, (response) => {
             if (response === 0) { // Runs the following if 'Yes' is clicked
                 if (this._downloadIsComplete == false) {
-                    this._cleanFileOnError(this._fileRoute)
+                    this._cleanFileOnError(this._booksFolderRoute, this._bookTitle)
                 }
                 appConst.showExitPrompt = false
                 this._window.close()
@@ -114,9 +117,10 @@ export class DownloadManager {
         })
     }
 
-    private _cleanFileOnError(route: string) {
-        if (existsSync(route) === true) {
-            unlinkSync(this._fileRoute);
+    private _cleanFileOnError(route: string, tile: string) {
+        const bookRoute = join(this._booksFolderRoute, this._bookTitle);
+        if (existsSync(bookRoute) === true) {
+            unlinkSync(bookRoute);
         }
     }
 
@@ -131,12 +135,21 @@ export class DownloadManager {
         }
         let fileComposeName = id
 
-        if (fileName.substr(fileName.length - 5) === `.epub`) {
+        const fileType = fileName.split(`.`)[1];
+
+        if (fileType === `epub`) {
             fileComposeName = fileComposeName + `.epub`
         } else {
             fileComposeName = fileComposeName + `.pdf`
         }
 
-        this._fileRoute = join(app.getAppPath(), `books/${fileComposeName}`)
+        this._bookTitle = fileComposeName;
+    }
+
+    private _createBooksFolderIfNotExits(){
+        if (existsSync(this._booksFolderRoute) === false) {
+            mkdirSync(this._booksFolderRoute);
+        }
+
     }
 }

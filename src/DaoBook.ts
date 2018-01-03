@@ -16,8 +16,7 @@ if (remote) {
 } else {
     app = require('electron').app
 }
-const bookStore = new Store('books');
-const configStore = new Store('config');
+const bookStore = new Store({ name: `books` });
 
 export class DaoBook {
     static gApi = new GoogleApi();
@@ -125,20 +124,26 @@ export class DaoBook {
     }
 
     static getAll(): Book[] {
-        let books = readdirSync(join(app.getAppPath(), `books`))
-        books = books.map(el => {
-            return el.split('.')[0]
-        });
         const booksArray: Book[] = []
-        for (let bookId of books) {
-            if (bookStore.has(bookId) === true) {
-                const book = DaoBook.fromDataBase(bookId)
-                if (book) {
-                    booksArray.push(book)
+        
+        try {
+            let books = readdirSync(join(app.getPath("documents"), `GooglePlayBooks`))
+            books = books.map(el => {
+                return el.split('.')[0]
+            });
+            console.log(bookStore.size);
+            for (let bookId of books) {
+                if (bookStore.has(bookId) === true) {
+                    const book = DaoBook.fromDataBase(bookId)
+                    if (book) {
+                        booksArray.push(book)
+                    }
                 }
             }
-        }
 
-        return booksArray
+            return booksArray
+        } catch (error) {
+            return booksArray;
+        }
     }
 }
