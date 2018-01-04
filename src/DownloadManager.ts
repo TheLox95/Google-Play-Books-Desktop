@@ -6,6 +6,7 @@ import { get } from 'request'
 import { join } from 'path'
 import { DaoBook } from './DaoBook'
 import { mkdir } from 'original-fs';
+import { BOOKS_FOLDER_URL } from './Credentials';
 
 
 interface myApp extends App {
@@ -26,7 +27,7 @@ export class DownloadManager {
     private _downloadIsComplete = false
     private _bookTitle: string
     private _bookId: string = ''
-    private _booksFolderRoute = join(app.getPath("documents"), `GooglePlayBooks`);
+    private _booksFolderRoute = BOOKS_FOLDER_URL;
 
     constructor(private _window: BrowserWindow) { }
 

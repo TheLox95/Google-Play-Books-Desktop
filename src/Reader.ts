@@ -3,6 +3,7 @@ import {existsSync} from 'fs'
 import {join} from 'path'
 import {format, URL} from 'url'
 const PDFWindow = require('electron-pdf-window')
+import { BOOKS_FOLDER_URL } from './Credentials';
 
 
 export class Reader{
@@ -17,17 +18,21 @@ export class Reader{
 
     private _openReader(){
         const bookId = this._bookURI.searchParams.get('id')
-        this._bookRoute = join(app.getAppPath(), `books/${bookId}`);
+        if (!bookId) {
+            return
+        }
+        this._bookRoute = join(BOOKS_FOLDER_URL, bookId);
 
         if (existsSync(`${this._bookRoute}.epub`)) {
             console.log('exist epub')
+            console.log(`${this._bookRoute}.epub`)
             let win = new BrowserWindow({ width: 800, height: 600, title: 'Epub', webPreferences: { preload: join(app.getAppPath(), 'epub-reader.js') } })
-            win.setMenu(null)
+            //win.setMenu(null)
             win.loadURL(format({
                 pathname: join(app.getAppPath(), 'views/epub-reader.html'),
                 protocol: 'file:',
                 slashes: true,
-                query: { id: bookId }
+                query: { id: bookId, books_folder: BOOKS_FOLDER_URL }
             }));
         } else if (existsSync(`${this._bookRoute}.pdf`)) {
             console.log('exist pdf')
@@ -35,7 +40,7 @@ export class Reader{
             const win = new BrowserWindow({ width: 800, height: 600, webPreferences: { webSecurity: false } })
             win.setMenu(null)
             PDFWindow.addSupport(win)
-            win.loadURL(`file://${join(app.getAppPath(), `books/${bookId}.pdf`)}`)
+            win.loadURL(`file://${join(BOOKS_FOLDER_URL, `${bookId}.pdf`)}`)
         }else{
             let win = new BrowserWindow({ width: 800, height: 600, webPreferences: { preload: join(app.getAppPath(), 'reader.js') } })
             win.setMenu(null)

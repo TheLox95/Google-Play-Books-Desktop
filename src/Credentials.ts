@@ -1,5 +1,15 @@
 import { randomBytes, createHash } from 'crypto';
+import { join } from 'path'
 
+const remote = require('electron').remote
+let app: any = null
+if (remote) {
+    app = remote.app
+} else {
+    app = require('electron').app
+}
+
+export const BOOKS_FOLDER_URL = join(app.getPath("documents"), `GooglePlayBooks`);
 export const PORT = 8000;
 export const SCOPE = `https://www.googleapis.com/auth/books`;
 export const CLIENT_ID = `309811375351-bdn7uctom5ukq2q947jfjru4nb294pfv.apps.googleusercontent.com`;
