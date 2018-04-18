@@ -35,9 +35,9 @@
       </div>
       <div class="extra content">
         {{#if this.accessInfo.pdf}}
-          <a href="{{this.downloadUrl}}" data-url="{{this.downloadUrl}}" data-id="{{this.id}}" data-filetype='pdf' class="downloadLink">Download</a>
+          <a data-url="{{this.downloadUrl}}" data-id="{{this.id}}" data-filetype='pdf' class="downloadLink">Download</a>
         {{else}}
-          <a href="{{this.downloadUrl}}" data-url="{{this.downloadUrl}}" data-id="{{this.id}}" data-filetype='epub' class="downloadLink">Download</a>
+          <a data-url="{{this.downloadUrl}}" data-id="{{this.id}}" data-filetype='epub' class="downloadLink">Download</a>
         {{/if}}
         <div class="ui progress" id="progressBar" style="display:none" data-value="0" data-total="0">
           <div class="bar">
