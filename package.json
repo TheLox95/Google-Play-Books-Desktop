@@ -4,7 +4,7 @@
   "description": "A desktop client for Google PlayBooks",
   "main": "main.js",
   "scripts": {
-    "start": "tsc && D:\\Documentos\\Projectos\\electron-quick-start\\node_modules\\electron\\dist\\electron.exe .",
+    "start": "tsc && electron .",
     "dist": "build"
   },
   "repository": "https://github.com/electron/electron-quick-start",
