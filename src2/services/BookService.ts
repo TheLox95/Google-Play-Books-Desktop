@@ -1,11 +1,8 @@
-import { createWriteStream} from "fs";
 import { IncomingMessage } from "http";
-import { inject, injectable } from "inversify";
+import { inject } from "inversify";
 import { join} from "path";
-import { get } from "request";
 import { Observable } from "rxjs/Observable";
 import { Subscriber } from "rxjs/Subscriber";
-import { Url } from "url";
 import { Book } from "../entities/Book";
 import TYPES from "../injections/Injections";
 import { IConfigService } from "./ConfigService";
