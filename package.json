@@ -5,7 +5,10 @@
   "main": "main.js",
   "scripts": {
     "start": "tsc && electron .",
-    "dist": "build"
+    "dist": "build",
+    "lint": "tslint -c tslint.json 'src2/test/*.{ts,tsx}' --exclude 'src2/**/*.d.ts'",
+    "pretest": "npm run lint",
+    "test": "jest ./test"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
@@ -44,9 +47,11 @@
   },
   "devDependencies": {
     "@types/core-js": "^0.9.43",
+    "@types/jest": "^22.2.3",
     "electron": "~1.7.8",
     "electron-builder": "^19.45.4",
-    "electron-builder-squirrel-windows": "^19.45.0"
+    "electron-builder-squirrel-windows": "^19.45.0",
+    "ts-jest": "^22.4.6"
   },
   "dependencies": {
     "@types/electron-store": "^1.2.0",
@@ -59,10 +64,23 @@
     "file-url": "^2.0.2",
     "handlebars": "^4.0.11",
     "is-online": "^7.0.0",
+    "jest": "^22.4.4",
     "jquery": "^3.2.1",
     "photonkit": "^0.1.2",
     "request": "^2.83.0",
     "rxjs": "^5.5.2",
-    "semantic-ui": "^2.2.13"
+    "semantic-ui": "^2.2.13",
+    "typescript": "^2.8.3"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(js?|ts?)$"
   }
 }
