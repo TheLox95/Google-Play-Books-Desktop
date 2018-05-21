@@ -9,8 +9,13 @@ export class ConfigService implements IConfigService {
     get BOOKS_FOLDER_ROUTE() {
         return join("", `GooglePlayBooks`);
     }
+
+    get API_URL() {
+        return join("", `GooglePlayBooks`);
+    }
 }
 
 export interface IConfigService {
     readonly BOOKS_FOLDER_ROUTE: string;
+    readonly API_URL: string;
 }

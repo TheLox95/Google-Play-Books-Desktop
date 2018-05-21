@@ -5,25 +5,9 @@ import { Observable } from "rxjs/Observable";
 import { Subscriber } from "rxjs/Subscriber";
 import { Book } from "../entities/Book";
 import TYPES from "../injections/Injections";
+import { IDonwloadProgress, IHttp } from "../utils/Http";
 import { IConfigService } from "./ConfigService";
 import { IFileService } from "./FileService";
-
-export interface IDonwloadProgress {
-    size: number;
-    soFar: number;
-}
-
-export interface IHttp {
-    getFile( url: string): Promise<IStreamEvent>;
-}
-
-interface IStreamEvent {
-    on(event: "response", fn: (message: IncomingMessage) => void): this;
-    on(event: "data", fn: (buffer: Buffer) => void): this;
-    on(event: "error", fn: (err: Error) => void): this;
-    on(event: "complete", fn: () => void): this;
-    pipe<WritableStream>(stream: WritableStream): this;
-}
 
 export interface IBookService {
     donwload(book: Book): Observable<IDonwloadProgress>;
@@ -35,7 +19,13 @@ export class BookService implements IBookService {
 
     constructor(
         private _http: IHttp,
+        @inject(TYPES.IConfigService) private _config: IConfigService,
         @inject(TYPES.IFileService) private _fileService: IFileService) {}
+
+    public async getAll(index: number = 0): Promise<Book[]> {
+        const response = await this._http.get(this._config.API_URL);
+        return Book.fromGoogleApiRes(response);
+    }
 
     public donwload(book: Book): Observable<IDonwloadProgress> {
 

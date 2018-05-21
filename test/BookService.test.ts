@@ -1,10 +1,12 @@
 import {URL} from "url";
-import { BookService, IDonwloadProgress, IHttp } from "../src2/services/BookService";
+import { BookService } from "../src2/services/BookService";
 import { IConfigService } from "../src2/services/ConfigService";
 import { IFileService } from "../src2/services/FileService";
+import { IDonwloadProgress, IHttp } from "../src2/utils/Http";
 import TYPES from "./../src2/injections/Injections";
 import CONFIG_CONTAINER from "./../src2/injections/inversify.config";
 import PDF_BOOK from "./book";
+import GoogleApiResJson from "./GoogleApiResponse";
 
 describe("BookService", () => {
   const mockErrorHttp = {
@@ -14,9 +16,6 @@ describe("BookService", () => {
           if (event === "error") {
             cb(new Error("My http error"));
           }
-        },
-        pipe: (stream) => {
-          return mockErrorHttp;
         },
       });
     },
@@ -36,11 +35,13 @@ describe("BookService", () => {
             cb();
           }
         },
-        pipe: (stream) => {
-          return mockErrorHttp;
-        },
-
       });
+    },
+  } as IHttp;
+
+  const mockBookResponse = {
+    get: (book) => {
+      return Promise.resolve(GoogleApiResJson);
     },
   } as IHttp;
 
@@ -56,8 +57,10 @@ describe("BookService", () => {
     },
   };
 
+  const fakeConfig = {API_URL: "google.com", BOOKS_FOLDER_ROUTE: "folder/"};
+
   it("should return a IDonwloadProgress with size & soFar property with the same value on complete", (done) => {
-    const service = new BookService(mockCompleteHttp, fakeFileService);
+    const service = new BookService(mockCompleteHttp, fakeConfig, fakeFileService);
     const observer = service.donwload(PDF_BOOK);
     let progress: IDonwloadProgress;
 
@@ -71,7 +74,7 @@ describe("BookService", () => {
   });
 
   it("should trow an Exception object on stream error", (done) => {
-    const service = new BookService(mockErrorHttp, fakeFileService);
+    const service = new BookService(mockErrorHttp, fakeConfig, fakeFileService);
     const observer = service.donwload(PDF_BOOK);
 
     observer.subscribe(undefined, (err: Error) => {
@@ -83,7 +86,7 @@ describe("BookService", () => {
   });
 
   it("should throw an error on file saving error", (done) => {
-    const service = new BookService(mockCompleteHttp, fakeBadFileService);
+    const service = new BookService(mockCompleteHttp, fakeConfig, fakeBadFileService);
     const observer = service.donwload(PDF_BOOK);
 
     observer.subscribe(undefined, (err: Error) => {
@@ -91,6 +94,15 @@ describe("BookService", () => {
       expect(err.message).toBe(`Error saving file`);
       done();
     }, undefined);
+
+  });
+
+  it("should return an array of Book", async (done) => {
+    const service = new BookService(mockBookResponse, fakeConfig, fakeFileService);
+    const books = await service.getAll();
+
+    expect(books.length).toBe(1);
+    done();
 
   });
 });
