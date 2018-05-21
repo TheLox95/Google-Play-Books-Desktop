@@ -6,9 +6,10 @@ import { get } from "request";
 import { Observable } from "rxjs/Observable";
 import { Subscriber } from "rxjs/Subscriber";
 import { Url } from "url";
+import { Book } from "../entities/Book";
+import TYPES from "../injections/Injections";
 import { IConfigService } from "./ConfigService";
-import { Book } from "./entities/Book";
-import TYPES from "./injections/Injections";
+import { IFileService } from "./FileService";
 
 export interface IDonwloadProgress {
     size: number;
@@ -37,7 +38,7 @@ export class BookService implements IBookService {
 
     constructor(
         private _http: IHttp,
-        @inject(TYPES.IConfigService) private _config: IConfigService) {}
+        @inject(TYPES.IFileService) private _fileService: IFileService) {}
 
     public donwload(book: Book): Observable<IDonwloadProgress> {
 
@@ -51,24 +52,28 @@ export class BookService implements IBookService {
 
             request.on("data", (chunk: Buffer) => {
                 this._progress.soFar += chunk.length;
-                observer.next(this._progress);
+                let soFar = this._progress.soFar;
+                soFar--;
+                observer.next({soFar, size: this._progress.size});
             });
 
-            request.on("complete", () => {
-                observer.complete();
+            request.on("complete", async () => {
+                const fileName = `${book.title}.${book.type}`;
+                try {
+                    const saved = await this._fileService.save({data: this._progress.soFar, fileName});
+
+                    observer.next(this._progress);
+                    observer.complete();
+                } catch (error) {
+                    observer.error(error);
+                }
             });
 
             request.on("error", (err: Error) => {
                 observer.error(err);
             });
 
-            // request.pipe(this._getFileStream(book));
         });
 
     }
-
-    private _getFileStream(book: Book) {
-        return createWriteStream(join(this._config.BOOKS_FOLDER_ROUTE, `${book.title}.${this._filetype}`));
-    }
-
 }
