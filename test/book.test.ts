@@ -1,4 +1,4 @@
-import { Book } from "../src2/Book";
+import { Book } from "../src2/entities/Book";
 import { ApiResponse } from "./../src2/types/ApiResponse.d";
 import GoogleApiResJson from "./GoogleApiResponse";
 

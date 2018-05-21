@@ -1,12 +1,14 @@
 import { createWriteStream} from "fs";
 import { IncomingMessage } from "http";
+import { inject, injectable } from "inversify";
 import { join} from "path";
 import { get } from "request";
-import "rxjs/add/observable/defer";
 import { Observable } from "rxjs/Observable";
 import { Subscriber } from "rxjs/Subscriber";
 import { Url } from "url";
-import { Book } from "./Book";
+import { IConfigService } from "./ConfigService";
+import { Book } from "./entities/Book";
+import TYPES from "./injections/Injections";
 
 export interface IDonwloadProgress {
     size: number;
@@ -14,29 +16,37 @@ export interface IDonwloadProgress {
 }
 
 export interface IHttp {
-    get( url: string): Promise<IStreamEvent>;
+    getFile( url: string): Promise<IStreamEvent>;
 }
 
 interface IStreamEvent {
-    on(event: "response", fn: (message: IncomingMessage) => void);
-    on(event: "data", fn: (buffer: Buffer) => void);
-    on(event: "error", fn: (err: Error) => void);
-    on(event: "complete", fn: () => void);
+    on(event: "response", fn: (message: IncomingMessage) => void): this;
+    on(event: "data", fn: (buffer: Buffer) => void): this;
+    on(event: "error", fn: (err: Error) => void): this;
+    on(event: "complete", fn: () => void): this;
+    pipe<WritableStream>(stream: WritableStream): this;
 }
 
-export class BookService {
-    private _outfile = createWriteStream(join("", "title"));
+export interface IBookService {
+    donwload(book: Book): Observable<IDonwloadProgress>;
+}
+
+export class BookService implements IBookService {
     private _progress: IDonwloadProgress = {size: 0, soFar: 0};
+    private _filetype = "";
 
-    constructor(private _http: IHttp) {}
+    constructor(
+        private _http: IHttp,
+        @inject(TYPES.IConfigService) private _config: IConfigService) {}
 
-    public donwload(url: Url): Observable<IDonwloadProgress> {
+    public donwload(book: Book): Observable<IDonwloadProgress> {
 
         return Observable.create( async (observer: Subscriber<{}>) => {
-            const request = await this._http.get(url.toString());
+            const request = await this._http.getFile(book.downloadUrl.toString());
 
             request.on("response", (data: IncomingMessage) => {
                 this._progress.size = parseInt(data.headers["content-length"], undefined);
+                this._filetype = data.headers["content-type"].split(`/`)[1];
             });
 
             request.on("data", (chunk: Buffer) => {
@@ -51,8 +61,14 @@ export class BookService {
             request.on("error", (err: Error) => {
                 observer.error(err);
             });
+
+            // request.pipe(this._getFileStream(book));
         });
 
+    }
+
+    private _getFileStream(book: Book) {
+        return createWriteStream(join(this._config.BOOKS_FOLDER_ROUTE, `${book.title}.${this._filetype}`));
     }
 
 }
