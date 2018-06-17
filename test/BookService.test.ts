@@ -4,7 +4,6 @@ import { IConfigService } from "../src2/services/ConfigService";
 import { IFileService } from "../src2/services/FileService";
 import { IDonwloadProgress, IHttp } from "../src2/utils/Http";
 import TYPES from "./../src2/injections/Injections";
-import CONFIG_CONTAINER from "./../src2/injections/inversify.config";
 import PDF_BOOK from "./book";
 import GoogleApiResJson from "./GoogleApiResponse";
 
@@ -57,7 +56,7 @@ describe("BookService", () => {
     },
   };
 
-  const fakeConfig = {API_URL: "google.com", BOOKS_FOLDER_ROUTE: "folder/"};
+  const fakeConfig = {API_URL: "google.com", BOOKS_FOLDER_ROUTE: "folder/"} as IConfigService;
 
   it("should return a IDonwloadProgress with size & soFar property with the same value on complete", (done) => {
     const service = new BookService(mockCompleteHttp, fakeConfig, fakeFileService);
