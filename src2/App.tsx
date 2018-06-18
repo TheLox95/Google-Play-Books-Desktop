@@ -7,15 +7,14 @@ interface IProps {
 export class App extends React.Component<IProps, {}> {
    render() {
    return (
-    <div>
-      <h1>This is a <i>{this.props.framework}</i> application using <i>{this.props.compiler}</i> with <i>{this.props.bundler}</i></h1>
-      <h4>Ohh YEAH!</h4>
-      <h4>Ohh YEAH!</h4>
-      <h4>Ohh YEAH!</h4>
-      <h4>Ohh YEAH!</h4>
-      <h4>Ohh YEAH!</h4>
-      <h4>Ohh YEAH!</h4>
+    <div className="window">
+    <div className="window-content">
+      <div className="pane-group">
+        <div className="pane-sm sidebar">...</div>
+        <div className="pane">...</div>
+      </div>
     </div>
+  </div>
   )
    }
 }
