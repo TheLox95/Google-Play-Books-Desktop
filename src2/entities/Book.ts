@@ -10,7 +10,7 @@ export class Book {
 
         for (const gBook of gBooks) {
             let type: BookType = "epub";
-            let donwloadURL;
+            let donwloadURL = new URL(``);
 
             if (gBook.accessInfo.epub) {
                 donwloadURL = new URL(gBook.accessInfo.epub.downloadLink);
