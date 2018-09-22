@@ -1,10 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import "../node_modules/photonkit/dist/css/photon.css";
+import "../node_modules/semantic-ui/dist/semantic.css";
 import {App} from "./App";
-import './app.css';
-import '../node_modules/photonkit/dist/css/photon.css';
+import "./app.css";
 
 ReactDOM.render(
-  <App compiler="npm" framework="React Electron"  bundler="webpack"/>,
-  document.getElementById("root")
+  <App/>,
+  document.getElementById("root"),
 );

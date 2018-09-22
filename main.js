@@ -6,8 +6,6 @@ app.showExitPrompt = true
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
-const path = require('path')
-const url = require('url')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -22,7 +20,7 @@ function createWindow() {
   
 
   // and load the index.html of the app.
-  mainWindow.loadURL('http://localhost:3000')
+  mainWindow.loadURL('http://localhost:4545');
 
   mainWindow.webContents.session.on("page-title-updated", event => event.preventDefault());
   mainWindow.webContents.session.on("will-download", downloadSuite.queueDownload);

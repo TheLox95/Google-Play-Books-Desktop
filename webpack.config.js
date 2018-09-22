@@ -26,7 +26,11 @@ module.exports = {
                 outputPath: 'fonts/'
             }
         }]
-      }
+      },
+      {
+        test: /\.png$/, 
+        loader: 'file-loader?name=images/[name].[ext]',
+      },
     ]
   },
   resolve: { 
