@@ -1,3 +1,4 @@
+import { URL } from "url";
 import { ApiResponse } from "../types/ApiResponse.d";
 
 type BookType = "pdf" | "epub";

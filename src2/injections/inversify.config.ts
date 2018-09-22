@@ -1,11 +1,8 @@
 import { Container } from "inversify";
 import "reflect-metadata";
-import { Book } from "../entities";
-import { ConfigService, IConfigService } from "../services/ConfigService";
+import { ConfigService, FileService, IConfigService, IFileService, IServer, Server } from "../services";
 import { ILogger, Logger } from "../utils/Logger";
-import { FileService, IFileService } from "./../services/FileService";
 import TYPES from "./injections";
-import { Server, IServer } from "../services/login/";
 
 const CONFIG_CONTAINER = new Container();
 CONFIG_CONTAINER.bind<IConfigService>(TYPES.IConfigService).to(ConfigService);

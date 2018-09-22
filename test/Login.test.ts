@@ -1,24 +1,23 @@
-import { Observable } from 'rxjs/Observable';
-import { LoginService } from "../src2/services/login/LoginService";
-import { IServer } from "../src2/services/login";
+import {} from "jest";
 import "rxjs/add/observable/of";
-import {} from 'jest'
+import { Observable } from "rxjs/Observable";
+import { IServer, LoginService } from "../src2/services";
 
 describe("login", () => {
     const fakeServer = {
-        listen:() =>{
+        listen: () => {
             return Observable.of(`5555`);
-        }
+        },
     } as IServer;
 
     const badFakeServer = {
-        listen:() =>{
+        listen: () => {
             return new Observable((subject) => {
                 setInterval(() => {
                     subject.next(new Error(`user not granted permission`));
                 }, 1000);
             });
-        }
+        },
     } as IServer;
 
     it("should return a google loging url address", () => {
@@ -39,11 +38,11 @@ describe("login", () => {
     it("should return error object when a error is returned", (done) => {
         const loging = new LoginService(badFakeServer);
         const observer = loging.listenLoginCallbackCode();
-        let errAmmo = 0;        
+        let errAmmo = 0;
         observer.subscribe((googleResponse) => {
             errAmmo++;
-            if(errAmmo === 3){
-                expect(googleResponse instanceof Error).toBe(true);                
+            if (errAmmo === 3) {
+                expect(googleResponse instanceof Error).toBe(true);
                 done();
             }
         });

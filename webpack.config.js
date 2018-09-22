@@ -3,6 +3,7 @@ const webpack = require("webpack");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = {
+  target: "electron-main",
   entry: "./src2/index.tsx",
   mode: "development",
   devtool: 'source-map', 

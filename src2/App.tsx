@@ -1,6 +1,7 @@
 import * as React from "react";
 import { If, Then } from "react-if";
 import { Button, Container, Divider } from "semantic-ui-react";
+import { URL } from "url";
 import BooksGrid from "./components/BooksGrid";
 import SideMenu, { OPTIONS } from "./components/SideMenu";
 import { Book } from "./entities";
@@ -18,7 +19,9 @@ export class App extends React.Component<{}, IState> {
     const books: Book[] = [];
     for (let index = 0; index < 6; index++) {
        // tslint:disable-next-line:max-line-length
-       books.push(new Book((Math.random() * 1000).toString(), `Harry potter`, new URL(`https://images-na.ssl-images-amazon.com/images/I/A1W8h-ozngL._RI_SX300_.jpg`), new URL(`http://google.com`), new URL(`http://google.com`), `pdf`));
+       const book = new Book((Math.random() * 1000).toString(), `Harry potter`, new URL(`https://images-na.ssl-images-amazon.com/images/I/A1W8h-ozngL._RI_SX300_.jpg`), new URL(`http://google.com`), new URL(`http://google.com`), `pdf`);
+       book.isDownloaded = (Math.floor(Math.random() * (2 - 1 + 1)) + 1) === 1;
+       books.push(book);
      }
 
     this.state = {
@@ -28,8 +31,6 @@ export class App extends React.Component<{}, IState> {
     };
   }
   public onOptionSelected = (e, { name: optionName }) => {
-    const { offlineBooks,  onlineBooks } = this.state;
-
     if (optionName === OPTIONS.ALL) {
       this.setState({ showOnly: OPTIONS.ALL});
     }
@@ -53,10 +54,12 @@ export class App extends React.Component<{}, IState> {
           <Container style={{padding: "30px", boxSizing: "border-box"}}>
             <If condition={onlineBooks.length !== 0 && (showOnly === OPTIONS.ALL || showOnly === OPTIONS.ONLINE)}>
               <Then>
-                <BooksGrid
-                  title={"Online books"}
-                  books={onlineBooks}/>
-              <Divider />
+                <React.Fragment>
+                  <BooksGrid
+                    title={"Online books"}
+                    books={onlineBooks}/>
+                  <Divider />
+                </React.Fragment>
               </Then>
             </If>
             <If condition={offlineBooks.length !== 0 && (showOnly === OPTIONS.ALL || showOnly === OPTIONS.OFFLINE)}>
@@ -64,7 +67,6 @@ export class App extends React.Component<{}, IState> {
                 <BooksGrid
                   title={"Offline books"}
                   books={offlineBooks}/>
-              <Divider />
               </Then>
             </If>
             <Button fluid>Load More</Button>

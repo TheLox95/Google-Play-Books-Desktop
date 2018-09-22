@@ -1,10 +1,9 @@
 import { IncomingMessage } from "http";
 import { inject } from "inversify";
-import { join} from "path";
 import { Observable } from "rxjs/Observable";
 import { Subscriber } from "rxjs/Subscriber";
 import { Book } from "../entities/Book";
-import TYPES from "../injections/Injections";
+import { TYPES } from "../injections";
 import { IDonwloadProgress, IHttp } from "../utils/Http";
 import { IConfigService } from "./ConfigService";
 import { IFileService } from "./FileService";

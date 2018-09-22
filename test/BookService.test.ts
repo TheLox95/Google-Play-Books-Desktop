@@ -1,9 +1,6 @@
 import {URL} from "url";
-import { BookService } from "../src2/services/BookService";
-import { IConfigService } from "../src2/services/ConfigService";
-import { IFileService } from "../src2/services/FileService";
+import { BookService, IConfigService } from "../src2/services";
 import { IDonwloadProgress, IHttp } from "../src2/utils/Http";
-import TYPES from "./../src2/injections/Injections";
 import PDF_BOOK from "./book";
 import GoogleApiResJson from "./GoogleApiResponse";
 

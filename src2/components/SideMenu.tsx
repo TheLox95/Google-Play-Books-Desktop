@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Menu  } from "semantic-ui-react";
 import { Book } from "../entities";
-import { bookContainer as BookContainer } from "./BookContainer";
+import BookContainer from "./BookContainer";
 
 interface IProps {
     book?: Book;
