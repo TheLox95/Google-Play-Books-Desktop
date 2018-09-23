@@ -23,7 +23,11 @@ export default class SideMenu extends React.Component<IProps, {}> {
             className="pane-sm sidebar"
             style={{width: "30%", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
             <div style={{flex: 2}}>
-                {this.props.book !== undefined && <BookContainer book={this.props.book} detailed={true}/>}
+                {this.props.book !== undefined && <BookContainer
+                    book={this.props.book}
+                    detailed={true}
+                    forceActive={true}
+                />}
             </div>
             <div style={{flex: 1}}>
             <Menu pointing secondary vertical>

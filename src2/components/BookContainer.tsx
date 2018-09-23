@@ -9,6 +9,7 @@ import { OfflineReader, OnlineReader } from "./readers";
 interface IProps {
     book: Book;
     detailed?: boolean;
+    forceActive?: boolean;
 }
 
 enum ReaderType {
@@ -17,15 +18,16 @@ enum ReaderType {
 }
 
 export default class BookContainer extends React.Component<IProps, {}> {
-    public static defaultProps = { detailed: false };
+    public static defaultProps = { detailed: false, forceActive: false };
 
     public render() {
-        const { book, detailed } = this.props;
+        const { book, detailed, forceActive } = this.props;
+        const isDisabled = !forceActive && !book.isDownloaded;
         return (
             <Card centered={true}>
-                <Image src={book.thumbnail.toString()} disabled={!book.isDownloaded}/>
+                <Image src={book.thumbnail.toString()} disabled={isDisabled}/>
                 <Card.Content>
-                <Header as="h2" disabled={!book.isDownloaded}>
+                <Header as="h2" disabled={isDisabled}>
                     {book.title}
                 </Header>
                 <If condition={detailed === true}>
