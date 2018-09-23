@@ -31,7 +31,7 @@ export class App extends React.Component<{}, IState> {
       showOnly: OPTIONS.ALL,
     };
   }
-  public onOptionSelected = (e, { name: optionName }) => {
+  public onOptionSelected = (optionName) => {
     if (optionName === OPTIONS.ALL) {
       this.setState({ showOnly: OPTIONS.ALL});
     }
