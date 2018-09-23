@@ -18,10 +18,11 @@ export class App extends React.Component<{}, IState> {
 
     const books: Book[] = [];
     for (let index = 0; index < 6; index++) {
+      const randomBool = (Math.floor(Math.random() * (2 - 1 + 1)) + 1) === 1;
        // tslint:disable-next-line:max-line-length
-       const book = new Book((Math.random() * 1000).toString(), `Harry potter`, new URL(`https://images-na.ssl-images-amazon.com/images/I/A1W8h-ozngL._RI_SX300_.jpg`), new URL(`http://google.com`), new URL(`http://google.com`), `pdf`);
-       book.isDownloaded = (Math.floor(Math.random() * (2 - 1 + 1)) + 1) === 1;
-       books.push(book);
+      const book = new Book((Math.random() * 1000).toString(), `Harry potter`, new URL(`https://images-na.ssl-images-amazon.com/images/I/A1W8h-ozngL._RI_SX300_.jpg`), new URL(`http://google.com`), new URL(`http://google.com`), "pdf");
+      book.isDownloaded = randomBool;
+      books.push(book);
      }
 
     this.state = {
