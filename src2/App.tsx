@@ -1,6 +1,10 @@
 import * as React from "react";
-import { If, Then } from "react-if";
-import { Button, Container, Divider } from "semantic-ui-react";
+import { Else, If, Then } from "react-if";
+import {
+  Button, Container,
+  Divider, Grid,
+  Header, Icon,
+} from "semantic-ui-react";
 import { URL } from "url";
 import BooksGrid from "./components/BooksGrid";
 import SideMenu, { OPTIONS } from "./components/SideMenu";
@@ -50,7 +54,10 @@ export class App extends React.Component<{}, IState> {
     <div className="window">
     <div className="window-content">
       <div className="pane-group">
-        <SideMenu book={offlineBooks[0] || onlineBooks[0]} onOptionSelected={this.onOptionSelected} />
+        <If condition={offlineBooks.length !== 0 || onlineBooks.length !== 0}>
+          <Then>
+            <React.Fragment>
+            <SideMenu book={offlineBooks[0] || onlineBooks[0]} onOptionSelected={this.onOptionSelected} />
         <div className="pane" style={{overflowX: "hidden"}}>
           <Container style={{padding: "30px", boxSizing: "border-box"}}>
             <If condition={onlineBooks.length !== 0 && (showOnly === OPTIONS.ALL || showOnly === OPTIONS.ONLINE)}>
@@ -73,6 +80,22 @@ export class App extends React.Component<{}, IState> {
             <Button fluid>Load More</Button>
           </Container>
         </div>
+            </React.Fragment>
+          </Then>
+          <Else>
+          <Container style={{padding: "30px", boxSizing: "border-box"}}>
+            <Grid>
+              <Grid.Column textAlign="center">
+                <Header as="h2" icon>
+                  <Icon name="exclamation triangle" />
+                  Could not load the book list
+                  <Header.Subheader>Make sure you have an active internet connection,</Header.Subheader>
+                </Header>
+              </Grid.Column>
+            </Grid>
+            </Container>
+        </Else>
+        </If>
       </div>
     </div>
   </div>
