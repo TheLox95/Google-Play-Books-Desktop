@@ -6,6 +6,7 @@ import BookContainer from "./BookContainer";
 interface IProps {
     books: Book[];
     title: string;
+    onBookSelected?: (book: Book) => void;
  }
 
 export default class BooksGrid extends React.Component<IProps, {}> {
@@ -15,7 +16,7 @@ export default class BooksGrid extends React.Component<IProps, {}> {
             : rows[rows.length - 1].push(key)) && rows, []);
     }
     public render() {
-        const {books} = this.props;
+        const {books, onBookSelected} = this.props;
         const bookTable = this.toMatrix(books);
         return (
             <Container>
@@ -25,7 +26,7 @@ export default class BooksGrid extends React.Component<IProps, {}> {
                         return (<Grid.Row key={idx}>
                             {bookRow.map((book) => {
                                 return (<Grid.Column key={book.id}>
-                                    <BookContainer book={book}/>
+                                    <BookContainer onBookSelected={onBookSelected} book={book}/>
                                 </Grid.Column>);
                             })}
                         </Grid.Row>);

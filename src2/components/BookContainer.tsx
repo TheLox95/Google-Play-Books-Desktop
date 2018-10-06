@@ -10,6 +10,7 @@ interface IProps {
     book: Book;
     detailed?: boolean;
     forceActive?: boolean;
+    onBookSelected?: (book: Book) => void;
 }
 
 enum ReaderType {
@@ -24,7 +25,7 @@ export default class BookContainer extends React.Component<IProps, {}> {
         const { book, detailed, forceActive } = this.props;
         const isDisabled = !forceActive && !book.isDownloaded;
         return (
-            <Card centered={true}>
+            <Card centered={true} onClick={this.onBookSelected}>
                 <Image src={book.thumbnail.toString()} disabled={isDisabled}/>
                 <Card.Content>
                 <Header as="h2" disabled={isDisabled}>
@@ -57,6 +58,13 @@ export default class BookContainer extends React.Component<IProps, {}> {
             </Card.Content>
             </Card>
         );
+    }
+
+    private onBookSelected = (ev, data) => {
+        const { book, onBookSelected } = this.props;
+        if (onBookSelected) {
+            onBookSelected(book);
+        }
     }
 
     private openReader = (readerType) => () => {
