@@ -1,4 +1,6 @@
+import * as gApi from "googleapis";
 import { IncomingMessage } from "http";
+import { injectable } from "inversify";
 import { inject } from "inversify";
 import { Observable } from "rxjs/Observable";
 import { Subscriber } from "rxjs/Subscriber";
@@ -7,23 +9,42 @@ import { TYPES } from "../injections";
 import { IDonwloadProgress, IHttp } from "../utils/Http";
 import { IConfigService } from "./ConfigService";
 import { IFileService } from "./FileService";
+import { IServer } from "./login";
 
 export interface IBookService {
     donwload(book: Book): Observable<IDonwloadProgress>;
+    getAll(index?: number): Promise<Book[]>;
 }
 
+@injectable()
 export class BookService implements IBookService {
     private _progress: IDonwloadProgress = {size: 0, soFar: 0};
     private _filetype = "";
+    private _oauth2Client;
+    private _ammoItemsPerCall = 10;
 
     constructor(
-        private _http: IHttp,
+        @inject(TYPES.IHttp) private _http: IHttp,
         @inject(TYPES.IConfigService) private _config: IConfigService,
-        @inject(TYPES.IFileService) private _fileService: IFileService) {}
+        @inject(TYPES.IFileService) private _fileService: IFileService) {
+            this._oauth2Client = new gApi.google.auth.OAuth2(
+                this._config.CLIENT_ID,
+                this._config.CLIENT_SECRET,
+                this._config.CALLBACK_LOGIN_URL,
+              );
+            const credentials = _config.USER_CREDENTIALS;
+            this._oauth2Client.setCredentials(credentials);
+        }
 
     public async getAll(index: number = 0): Promise<Book[]> {
-        const response = await this._http.get(this._config.API_URL);
-        return Book.fromGoogleApiRes(response);
+        const apis = new gApi.GoogleApis();
+        const b = new gApi.books_v1.Books({}, apis);
+        const r = new gApi.books_v1.Resource$Volumes$Useruploaded(b);
+        const a = await r.list({
+            auth: this._oauth2Client,
+            startIndex: index * this._ammoItemsPerCall,
+        });
+        return Book.fromGoogleApiRes(a.data.items);
     }
 
     public donwload(book: Book): Observable<IDonwloadProgress> {
@@ -31,33 +52,7 @@ export class BookService implements IBookService {
         return Observable.create( async (observer: Subscriber<{}>) => {
             const request = await this._http.getFile(book.downloadUrl.toString());
 
-            request.on("response", (data: IncomingMessage) => {
-                this._progress.size = parseInt(data.headers["content-length"], undefined);
-                this._filetype = data.headers["content-type"].split(`/`)[1];
-            });
-
-            request.on("data", (chunk: Buffer) => {
-                this._progress.soFar += chunk.length;
-                let soFar = this._progress.soFar;
-                soFar--;
-                observer.next({soFar, size: this._progress.size});
-            });
-
-            request.on("complete", async () => {
-                const fileName = `${book.title}.${book.type}`;
-                try {
-                    const saved = await this._fileService.save({data: this._progress.soFar, fileName});
-
-                    observer.next(this._progress);
-                    observer.complete();
-                } catch (error) {
-                    observer.error(error);
-                }
-            });
-
-            request.on("error", (err: Error) => {
-                observer.error(err);
-            });
+            request.subscribe((e) => console.log(e));
 
         });
 

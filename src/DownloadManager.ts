@@ -1,12 +1,12 @@
-import { app, App, dialog, remote, DownloadItem, WebContents, BrowserWindow } from 'electron'
-import { IncomingMessage } from 'http'
-import { createWriteStream, unlinkSync, writeFileSync, existsSync, mkdirSync} from 'fs'
-import { URL } from 'url'
-import { get } from 'request'
-import { join } from 'path'
-import { DaoBook } from './DaoBook'
-import { mkdir } from 'original-fs';
-import { BOOKS_FOLDER_URL } from './Credentials';
+import { app, App, dialog, remote, DownloadItem, WebContents, BrowserWindow } from "electron";
+import { IncomingMessage } from "http"
+import { createWriteStream, unlinkSync, writeFileSync, existsSync, mkdirSync} from "fs";
+import { URL } from "url";
+import { get } from "request";
+import { join } from "path";
+import { DaoBook } from "./DaoBook";
+import { mkdir } from "original-fs";
+import { BOOKS_FOLDER_URL } from "./Credentials";
 
 
 interface myApp extends App {
@@ -26,7 +26,7 @@ interface DownloadBookInfo {
 export class DownloadManager {
     private _downloadIsComplete = false
     private _bookTitle: string
-    private _bookId: string = ''
+    private _bookId: string = ""
     private _booksFolderRoute = BOOKS_FOLDER_URL;
 
     constructor(private _window: BrowserWindow) { }
@@ -45,68 +45,62 @@ export class DownloadManager {
                 percent: received_bytes,
                 size: total_bytes,
                 isDone: false,
-                state: 'donwloading'
+                state: "donwloading"
             }
 
             if (existsSync(join(this._booksFolderRoute, this._bookTitle)) === false) {
-                writeFileSync(join(this._booksFolderRoute, this._bookTitle), '');
+                writeFileSync(join(this._booksFolderRoute, this._bookTitle), "");
             }
 
             const out = createWriteStream(join(this._booksFolderRoute, this._bookTitle));
             const req = await get(bookUrl);
 
-            out.on('open', fd => {
+            out.on("open", fd => {
                 req.pipe(out);
 
-                req.on('response', (data: IncomingMessage) => total_bytes = parseInt(data.headers['content-length']));
+                req.on("response", (data: IncomingMessage) => total_bytes = parseInt(data.headers["content-length"]));
 
-                req.on('data', (chunk: Buffer) => {
+                req.on("data", (chunk: Buffer) => {
                     received_bytes += chunk.length;
-                    defaultMsg.percent = received_bytes
-                    defaultMsg.size = total_bytes
+                    defaultMsg.percent = received_bytes;
+                    defaultMsg.size = total_bytes;
                     this._notify(defaultMsg);
                 });
 
-                req.on('end', () => {
+                req.on("end", () => {
                     console.log("File succesfully downloaded");
                     this._downloadIsComplete = true;
 
                     defaultMsg.isDone = true;
-                    defaultMsg.state = 'finished'
+                    defaultMsg.state = "finished";
 
                     this._notify(defaultMsg);
                 });
 
-                req.on('error', (err: Error) => this._cleanFileOnError(this._booksFolderRoute, this._bookTitle));
+                req.on("error", (err: Error) => this._cleanFileOnError(this._booksFolderRoute, this._bookTitle));
             });
         } catch (error) {
             console.log(error);
         }
     }
 
-    private _notify(msg: DownloadBookInfo) {
-        if (this._window.isDestroyed() === false) {
-            this._window.webContents.send('download-book', msg)
-        }
-    }
-
-    downloadWillInterrupt = (e: Event) => {
-        const appConst = app as myApp
+    public downloadWillInterrupt = (e: Event) => {
+        const appConst = app as myApp;
 
         if (appConst.showExitPrompt === false) {
-            return
+            return;
         }
 
         if (this._downloadIsComplete === true) {
-            return
+            return;
         }
 
-        e.preventDefault() // Prevents the window from closing 
+        e.preventDefault(); // Prevents the window from closing 
         dialog.showMessageBox({
-            type: 'question',
-            buttons: ['Yes', 'No'],
-            title: 'Confirm',
-            message: 'A book is being donwloaded right now. Do you want to exit?'
+            type: "question",
+            buttons: ["Yes", "No"],
+            title: "Confirm",
+            message: "A book is being donwloaded right now. Do you want to exit?"
         }, (response) => {
             if (response === 0) { // Runs the following if 'Yes' is clicked
                 if (this._downloadIsComplete == false) {
@@ -115,7 +109,13 @@ export class DownloadManager {
                 appConst.showExitPrompt = false
                 this._window.close()
             }
-        })
+        });
+    }
+
+    private _notify(msg: DownloadBookInfo) {
+        if (this._window.isDestroyed() === false) {
+            this._window.webContents.send("download-book", msg);
+        }
     }
 
     private _cleanFileOnError(route: string, tile: string) {
@@ -126,22 +126,22 @@ export class DownloadManager {
     }
 
     private _getRoute(item: DownloadItem) {
-        const donwloadLink = item.getURLChain()[0]
-        const fileName = item.getFilename()
-        const uri = new URL(donwloadLink)
+        const donwloadLink = item.getURLChain()[0];
+        const fileName = item.getFilename();
+        const uri = new URL(donwloadLink);
 
-        const id = uri.searchParams.get('id');
+        const id = uri.searchParams.get("id");
         if (id) {
-            this._bookId = id
+            this._bookId = id;
         }
-        let fileComposeName = id
+        let fileComposeName = id;
 
         const fileType = fileName.split(`.`)[1];
 
         if (fileType === `epub`) {
-            fileComposeName = fileComposeName + `.epub`
+            fileComposeName = fileComposeName + `.epub`;
         } else {
-            fileComposeName = fileComposeName + `.pdf`
+            fileComposeName = fileComposeName + `.pdf`;
         }
 
         this._bookTitle = fileComposeName;

@@ -1,35 +1,51 @@
+import { app, BrowserWindow, remote } from "electron";
 import {google} from "googleapis";
-import { inject } from "inversify";
+import { inject, injectable } from "inversify";
 import "reflect-metadata";
+import { Observable } from "rxjs/Observable";
 import { IServer } from ".";
-import {TYPES} from "../../injections";
-import { CLIENT_ID, CLIENT_SECRET, LOCAL_SERVER, SCOPE } from "../../utils/Credential";
+import { IConfigService } from "../";
+import { TYPES } from "../../injections";
 
-export class LoginService {
+@injectable()
+export class LoginService implements ILoginService {
 
-    private _oauth2Client = new google.auth.OAuth2(
-        CLIENT_ID,
-        CLIENT_SECRET,
-        LOCAL_SERVER,
-      );
-
-    private _scopes = [
-        SCOPE,
-    ];
+    private _loginWindow: BrowserWindow;
 
     constructor(
-        @inject(TYPES.IServer) private _server: IServer) {}
+        @inject(TYPES.IServer) private _server: IServer,
+        @inject(TYPES.IConfigService) private _config: IConfigService,
+        ) {}
 
-    public getLoginUrl() {
-        return this._oauth2Client.generateAuthUrl({
-            // 'online' (default) or 'offline' (gets refresh_token)
-            access_type: "offline",
-            // If you only need one scope you can pass it as a string
-            scope: this._scopes,
-          });
+    public saveToken(code) {
+        const oauth2Client = this._config.OAUTH_CLIENT;
+        return oauth2Client.getToken(code)
+        .then((tokens) => {
+          localStorage.setItem("credentials", JSON.stringify(tokens.tokens));
+          this._loginWindow.close();
+          return true;
+        });
     }
 
-    public listenLoginCallbackCode() {
+    public appNeedsLogin() {
+        if (localStorage.getItem("credentials") !== null) {
+            return false;
+        }
+        return true;
+    }
+
+    public listenUserLogin() {
+        this._loginWindow = new remote.BrowserWindow({ width: 1000, height: 1000, title: "Google Play Books Desktop"});
+        this._loginWindow.setMenu(null);
+        this._loginWindow.webContents.openDevTools();
+        this._loginWindow.loadURL(this._config.OAUTH_URL);
+
         return this._server.listen();
     }
+}
+
+export interface ILoginService {
+    appNeedsLogin: () => boolean;
+    listenUserLogin: () => Observable<string>;
+    saveToken: (code: string) => Promise<boolean>;
 }

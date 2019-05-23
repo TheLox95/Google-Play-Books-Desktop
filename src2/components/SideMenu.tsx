@@ -43,6 +43,7 @@ export default class SideMenu extends React.Component<IProps, IState> {
                 {this.props.book !== undefined && <BookContainer
                     book={this.props.book}
                     detailed={true}
+                    disableAnimation={true}
                     forceActive={true}
                 />}
             </div>

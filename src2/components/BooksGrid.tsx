@@ -6,6 +6,7 @@ import BookContainer from "./BookContainer";
 interface IProps {
     books: Book[];
     title: string;
+    disabled: boolean;
     onBookSelected?: (book: Book) => void;
  }
 
@@ -16,7 +17,7 @@ export default class BooksGrid extends React.Component<IProps, {}> {
             : rows[rows.length - 1].push(key)) && rows, []);
     }
     public render() {
-        const {books, onBookSelected} = this.props;
+        const {books, onBookSelected, disabled} = this.props;
         const bookTable = this.toMatrix(books);
         return (
             <Container>
@@ -26,7 +27,7 @@ export default class BooksGrid extends React.Component<IProps, {}> {
                         return (<Grid.Row key={idx}>
                             {bookRow.map((book) => {
                                 return (<Grid.Column key={book.id}>
-                                    <BookContainer onBookSelected={onBookSelected} book={book}/>
+                                    <BookContainer onBookSelected={onBookSelected} book={book} forceActive={disabled} />
                                 </Grid.Column>);
                             })}
                         </Grid.Row>);

@@ -1,16 +1,20 @@
+import * as gApi from "googleapis";
 import { URL } from "url";
-import { ApiResponse } from "../types/ApiResponse.d";
+import * as uuidv4 from "uuid/v4";
+import { CONTAINER } from "../injections";
+import { FileService, IFileService } from "../services";
 
 type BookType = "pdf" | "epub";
 
 export class Book {
-    public static fromGoogleApiRes(gJsonRes: ApiResponse): Book[] {
-        const gBooks  = gJsonRes.items || [];
+    public static async fromGoogleApiRes(gJsonRes: gApi.books_v1.Schema$Volume[] | undefined): Promise<Book[]> {
+        const gBooks  = gJsonRes || [];
         const books: Book[] = [];
+        const fService = CONTAINER.resolve<IFileService>(FileService);
 
         for (const gBook of gBooks) {
             let type: BookType = "epub";
-            let donwloadURL = new URL(``);
+            let donwloadURL = new URL(`https://www.npmjs.com/package/uuid`);
 
             if (gBook.accessInfo.epub) {
                 donwloadURL = new URL(gBook.accessInfo.epub.downloadLink);
@@ -22,18 +26,19 @@ export class Book {
             }
 
             books.push(new Book(
-                gBook.id,
+                gBook.id || uuidv4(),
                 gBook.volumeInfo.title,
                 new URL(gBook.volumeInfo.imageLinks.thumbnail),
                 new URL(gBook.accessInfo.webReaderLink),
                 donwloadURL,
                 type,
+                await fService.fileIsSaved(gBook.volumeInfo.title),
+                gBook.userInfo.updated || null,
+                gBook.volumeInfo.description || null,
             ));
         }
         return books;
     }
-
-    private _isDownloaed = false;
 
     constructor(private _id: string,
                 private _title: string,
@@ -41,6 +46,9 @@ export class Book {
                 private _webReaderUrl: URL,
                 private _downloadUrl: URL,
                 private _bookType: BookType,
+                private _isDownloaed: boolean,
+                private _uploadDate: string | null,
+                private _description: string | null,
         ) {
 
     }
@@ -81,4 +89,11 @@ export class Book {
         this._isDownloaed = v;
     }
 
+    public get uploadDate() {
+        return this._uploadDate;
+    }
+
+    public get description() {
+        return this._description;
+    }
 }
