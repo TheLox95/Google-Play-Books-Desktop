@@ -1,5 +1,4 @@
 import * as gApi from "googleapis";
-import { IncomingMessage } from "http";
 import { injectable } from "inversify";
 import { inject } from "inversify";
 import { Observable } from "rxjs/Observable";
@@ -8,8 +7,6 @@ import { Book } from "../entities/Book";
 import { TYPES } from "../injections";
 import { IDonwloadProgress, IHttp } from "../utils/Http";
 import { IConfigService } from "./ConfigService";
-import { IFileService } from "./FileService";
-import { IServer } from "./login";
 
 export interface IBookService {
     donwload(book: Book): Observable<IDonwloadProgress>;
@@ -25,8 +22,7 @@ export class BookService implements IBookService {
 
     constructor(
         @inject(TYPES.IHttp) private _http: IHttp,
-        @inject(TYPES.IConfigService) private _config: IConfigService,
-        @inject(TYPES.IFileService) private _fileService: IFileService) {
+        @inject(TYPES.IConfigService) private _config: IConfigService) {
             this._oauth2Client = new gApi.google.auth.OAuth2(
                 this._config.CLIENT_ID,
                 this._config.CLIENT_SECRET,

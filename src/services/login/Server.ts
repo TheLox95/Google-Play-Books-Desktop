@@ -1,7 +1,7 @@
 import { createServer } from "http";
 import { inject, injectable } from "inversify";
 import { Subject } from "rxjs/Subject";
-import { IServer } from ".";
+import { IServer } from "../login";
 import TYPES from "../../injections/injections";
 import { ILogger } from "../../utils/Logger";
 import { IConfigService } from "../ConfigService";

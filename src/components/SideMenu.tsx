@@ -47,21 +47,6 @@ export default class SideMenu extends React.Component<IProps, IState> {
                     forceActive={true}
                 />}
             </div>
-            <div style={{flex: "0 1 auto", display: "flex", justifyContent: "flex-end", marginBottom: "5%" }}>
-                <Menu pointing secondary vertical>
-                <Menu.Item name={OPTIONS.ALL} active={optionActive === OPTIONS.ALL} onClick={this.onOptionSelected()} />
-                <Menu.Item
-                    name={OPTIONS.ONLINE}
-                    active={optionActive === OPTIONS.ONLINE}
-                    onClick={this.onOptionSelected()}
-                />
-                <Menu.Item
-                    name={OPTIONS.OFFLINE}
-                    active={optionActive === OPTIONS.OFFLINE}
-                    onClick={this.onOptionSelected()}
-                />
-                </Menu>
-            </div>
         </div>
         );
     }

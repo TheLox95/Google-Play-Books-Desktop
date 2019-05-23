@@ -4,7 +4,7 @@ import { inject, injectable } from "inversify";
 import { join } from "path";
 import "reflect-metadata";
 import { TYPES } from "../injections";
-import { LOCAL_PORT } from "./../utils/Credential";
+import { LOCAL_PORT } from "../utils/Credential";
 import { IServer } from "./login";
 import { OauthClient } from "./OauthClient";
 

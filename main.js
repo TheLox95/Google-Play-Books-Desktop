@@ -1,5 +1,4 @@
 const electron = require('electron')
-const DownloadSuite = require('./src/DownloadSuite').DownloadSuite
 // Module to control application life.
 const app = electron.app
 app.showExitPrompt = true
@@ -16,14 +15,12 @@ function createWindow() {
   mainWindow = new BrowserWindow({ width: 1000, height: 1000, title: 'Google Play Books Desktop'})
   mainWindow.setMenu(null);
   mainWindow.webContents.openDevTools();
-  const downloadSuite = new DownloadSuite(mainWindow);       
   
 
   // and load the index.html of the app.
   mainWindow.loadURL('http://localhost:4545');
 
   mainWindow.webContents.session.on("page-title-updated", event => event.preventDefault());
-  mainWindow.webContents.session.on("will-download", downloadSuite.queueDownload);
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
@@ -34,8 +31,6 @@ function createWindow() {
     // when you should delete the corresponding element.
     mainWindow = null
   })
-
-  mainWindow.on('close', downloadSuite.interuptDownload)
 }
 
 // This method will be called when Electron has finished

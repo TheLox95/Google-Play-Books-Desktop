@@ -3,8 +3,8 @@ import {google} from "googleapis";
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { Observable } from "rxjs/Observable";
-import { IServer } from ".";
-import { IConfigService } from "../";
+import { IServer } from "../login";
+import { IConfigService } from "..";
 import { TYPES } from "../../injections";
 
 @injectable()

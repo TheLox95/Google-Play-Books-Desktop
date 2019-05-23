@@ -31,26 +31,6 @@ export class Http implements IHttp {
             .pipe(createWriteStream("./file.html"));
 
         return Promise.resolve((new Subject()).asObservable());
-
-        /*return axios.default({
-            method: "GET",
-            maxRedirects: 0,
-            headers: {
-                "Authorization": `Bearer ${tokens.access_token}`,
-                'Content-Type': 'application/octet-stream',
-            },
-            url,
-            responseType: "stream",
-          })*/
-        /*const client = new OauthClient();
-        client.setCredentials(tokens);
-        return client.request<any>({
-            url: `${url}?access_token=${tokens.access_token}`,
-        })
-        .then((response) => {
-            return response.data.pipe(createWriteStream('./ada_lovelace.html'))
-        })
-        .catch(err => console.log(err));*/
     }
 
     public async get(url: string) {

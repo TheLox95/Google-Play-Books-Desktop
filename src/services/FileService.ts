@@ -1,6 +1,6 @@
 import { access, constants, createWriteStream} from "fs";
 import { inject, injectable } from "inversify";
-import { IConfigService } from ".";
+import { IConfigService } from "../services";
 import { Book } from "../entities";
 import { TYPES } from "../injections";
 

@@ -4,7 +4,7 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   target: "electron-main",
-  entry: "./src2/index.tsx",
+  entry: "./src/index.tsx",
   mode: "development",
   devtool: 'source-map', 
   module: {
@@ -48,7 +48,7 @@ module.exports = {
     publicPath: "http://localhost:4545/build/",
   },
   plugins: [ 
-    new HtmlWebPackPlugin( {template: path.resolve(__dirname, 'src2', 'index.html')}),
+    new HtmlWebPackPlugin( {template: path.resolve(__dirname, 'src', 'index.html')}),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.ProvidePlugin({
       "React": "react",
