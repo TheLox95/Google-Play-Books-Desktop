@@ -1,4 +1,6 @@
 const electron = require('electron')
+const url = require('url');
+const path = require('path');
 // Module to control application life.
 const app = electron.app
 app.showExitPrompt = true

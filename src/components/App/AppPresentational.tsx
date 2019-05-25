@@ -1,4 +1,3 @@
-import * as electron from "electron";
 import * as React from "react";
 import { If, Then } from "react-if";
 import {
@@ -10,6 +9,7 @@ import {
 } from "semantic-ui-react";
 import { Book } from "../../entities";
 import BooksGrid from "../BooksGrid";
+import { GLOBAL_CONTEXT } from "./AppContainer";
 import SideMenu, { OPTIONS } from "../SideMenu";
 
 enum APP_STATUS {
@@ -30,44 +30,38 @@ interface IProp {
   allLoaded: boolean;
   onBookSelected();
   onLoadMore();
+  onOptionSelected(optionName: string);
 }
 
 export class AppPresentational extends React.Component<IProp, {}> {
-  public onOptionSelected = (optionName) => {
-    if (optionName === OPTIONS.ALL) {
-      this.setState({ showOnly: OPTIONS.ALL});
-    }
-
-    if (optionName === OPTIONS.OFFLINE) {
-      this.setState({ showOnly: OPTIONS.OFFLINE});
-    }
-
-    if (optionName === OPTIONS.ONLINE) {
-      this.setState({ showOnly: OPTIONS.ONLINE });
-    }
-  }
+  public static contextType = GLOBAL_CONTEXT;
 
   public render() {
-    const { canConnect, previewBook } = this.props;
+    const { previewBook, onOptionSelected } = this.props;
 
     return (
       <div className="window">
         <div className="window-content">
           <div className="pane-group">
             <React.Fragment>
-              <SideMenu book={previewBook} onOptionSelected={this.onOptionSelected} />
+              <SideMenu book={previewBook} onOptionSelected={onOptionSelected} />
               {this._resolveScreen()}
             </React.Fragment>
           </div>
         </div>
-        <footer className="toolbar toolbar-footer" style={{ display: canConnect ? "none" : "inline" }}>
-          <Message warning>
-            <Message.Header>You must register before you can do that!</Message.Header>
-            <p>Visit our registration page, then try again.</p>
-          </Message>
+        <footer className="toolbar toolbar-footer" >
+          {this._resolveFooter()}
         </footer>
       </div>
     );
+   }
+
+   private _resolveFooter() {
+    const value = this.context;
+
+    if (value.error.hasError) {
+      return (<p>Error found!{value.error.message}</p>);
+    }
    }
 
    private _resolveScreen() {
@@ -131,14 +125,19 @@ export class AppPresentational extends React.Component<IProp, {}> {
                   books={offlineBooks}/>
               </Then>
             </If>
-            {!allLoaded && (
+            {!allLoaded && canConnect && (
               <Button fluid disabled={!canConnect} onClick={onLoadMore()}>
                 Load More
               </Button>
             )}
+            {!canConnect && (
+              <Button fluid onClick={onLoadMore()}>
+                Try load
+              </Button>
+            )}
             {allLoaded && (
               <Message warning>
-                <Message.Header>You must register before you can do that!</Message.Header>
+                <Message.Header>All books loadded</Message.Header>
                 <p>Visit our registration page, then try again.</p>
               </Message>
             )}

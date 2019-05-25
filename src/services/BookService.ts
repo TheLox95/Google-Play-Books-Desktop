@@ -1,3 +1,4 @@
+import { AppError } from './../utils/Error';
 import * as gApi from "googleapis";
 import { injectable } from "inversify";
 import { inject } from "inversify";
@@ -7,6 +8,7 @@ import { Book } from "../entities/Book";
 import { TYPES } from "../injections";
 import { IDonwloadProgress, IHttp } from "../utils/Http";
 import { IConfigService } from "./ConfigService";
+import { ErrorCode } from '../utils/ErrorCodes';
 
 export interface IBookService {
     donwload(book: Book): Observable<IDonwloadProgress>;
@@ -33,14 +35,21 @@ export class BookService implements IBookService {
         }
 
     public async getAll(index: number = 0): Promise<Book[]> {
-        const apis = new gApi.GoogleApis();
-        const b = new gApi.books_v1.Books({}, apis);
-        const r = new gApi.books_v1.Resource$Volumes$Useruploaded(b);
-        const a = await r.list({
-            auth: this._oauth2Client,
-            startIndex: index * this._ammoItemsPerCall,
-        });
-        return Book.fromGoogleApiRes(a.data.items);
+        try {
+            const apis = new gApi.GoogleApis();
+            const b = new gApi.books_v1.Books({}, apis);
+            const r = new gApi.books_v1.Resource$Volumes$Useruploaded(b);
+            const a = await r.list({
+                auth: this._oauth2Client,
+                startIndex: index * this._ammoItemsPerCall,
+            });
+            return Book.fromGoogleApiRes(a.data.items);
+        } catch (error) {
+            throw new AppError({
+                code: ErrorCode.FETCH_ERROR,
+                message: error.toString(),
+            });
+        }
     }
 
     public donwload(book: Book): Observable<IDonwloadProgress> {
