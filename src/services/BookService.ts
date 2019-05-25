@@ -1,4 +1,3 @@
-import { AppError } from './../utils/Error';
 import * as gApi from "googleapis";
 import { injectable } from "inversify";
 import { inject } from "inversify";
@@ -6,9 +5,10 @@ import { Observable } from "rxjs/Observable";
 import { Subscriber } from "rxjs/Subscriber";
 import { Book } from "../entities/Book";
 import { TYPES } from "../injections";
+import { ErrorCode } from "../utils/ErrorCodes";
 import { IDonwloadProgress, IHttp } from "../utils/Http";
+import { AppError } from "./../utils/Error";
 import { IConfigService } from "./ConfigService";
-import { ErrorCode } from '../utils/ErrorCodes';
 
 export interface IBookService {
     donwload(book: Book): Observable<IDonwloadProgress>;

@@ -1,12 +1,12 @@
 import { ErrorCode } from "./ErrorCodes";
 
-interface ErrorMeta{
-  code: ErrorCode,
-  message: string,
+interface IErrorMeta {
+  code: ErrorCode;
+  message: string;
 }
 
 export class AppError extends Error {
-  constructor(public m: ErrorMeta) {
+  constructor(public m: IErrorMeta) {
       super(m.message);
 
       Object.setPrototypeOf(this, AppError.prototype);

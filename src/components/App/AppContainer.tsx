@@ -22,29 +22,31 @@ export interface IError {
   error: {
     hasError: boolean;
     message: string,
-  },
-  setError: (msg: string) => void
+  };
+  setError: (msg: string) => void;
 }
 
-export interface GlobalState extends IError{
+export interface IGlobalState extends IError {
   status: APP_STATUS;
-  setStatus: (msg: GlobalState) => void
+  setStatus: (msg: IGlobalState) => void;
 }
 export const defaultContext = {
-  status: APP_STATUS.BOOTSTRAP,
-  setStatus: (obj: GlobalState) => {},
   error: {
     hasError: false,
     message: "NO_ERROR",
   },
-  setError: (msg: string) => {},
+  setError: (msg: string) => {
+    return msg;
+  },
+  setStatus: (obj: IGlobalState) => {
+    return obj;
+  },
+  status: APP_STATUS.BOOTSTRAP,
 };
-export const GLOBAL_CONTEXT = React.createContext<GlobalState>(defaultContext);
+export const GLOBAL_CONTEXT = React.createContext<IGlobalState>(defaultContext);
 
-import { AppPresentational } from "./AppPresentational";
 import { Root } from "../Root";
-import PdfReader from "../readers/offlineReaderRender/PdfRender";
-
+import { AppPresentational } from "./AppPresentational";
 
 interface IState {
   onlineBooks: Book[];
@@ -87,7 +89,7 @@ export class AppContainer extends Root<{}, IState> {
         }
         conectivityS.observeConnection()
           .subscribe(
-            (canConnect) => this.setState({canConnect}),
+            (canConnectRes) => this.setState({canConnect: canConnectRes}),
             (err) => {
               this.setState({canConnect: false});
               this.setError(err);
@@ -136,7 +138,7 @@ export class AppContainer extends Root<{}, IState> {
    }
 
    private _onLoadMore = () => () => {
-    let { index } = this.state;
+    const { index } = this.state;
     this._fetchBooks(index);
    }
 

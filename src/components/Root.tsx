@@ -1,9 +1,9 @@
 import * as React from "react";
-import { defaultContext, APP_STATUS, GlobalState } from "./App";
+import { APP_STATUS, defaultContext, IGlobalState } from "./App";
 
 type Partial<T> = {
   [P in keyof T]?: T[P];
-}
+};
 
 export class Root<P = {}, S = {}, SS = any> extends React.Component<P, S, SS> {
   public bootstrappedContext;
@@ -20,18 +20,18 @@ export class Root<P = {}, S = {}, SS = any> extends React.Component<P, S, SS> {
     this.bootstrappedContext = { ...this.context, setStatus: this.updateContext };
   }
 
-  updateContext = (data: Partial<GlobalState>) => {
+  public updateContext = (data: Partial<IGlobalState>) => {
     this.currentGlobalState = { ...this.currentGlobalState, ...data };
     this.forceUpdate();
   }
 
-  setError = (err) => {
+  public setError = (err) => {
     this.updateContext({
-      status: APP_STATUS.LOADED,
       error: {
         hasError: true,
         message: err.toString(),
-      }
+      },
+      status: APP_STATUS.LOADED,
     });
   }
 }
