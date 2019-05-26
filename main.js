@@ -1,6 +1,4 @@
 const electron = require('electron')
-const url = require('url');
-const path = require('path');
 // Module to control application life.
 const app = electron.app
 app.showExitPrompt = true
@@ -16,11 +14,14 @@ function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 1000, height: 1000, title: 'Google Play Books Desktop'})
   mainWindow.setMenu(null);
-  mainWindow.webContents.openDevTools();
-  
+  let url = `file://${__dirname}/build/index.html`;
+  if (process.env.DEV_MODE == "1") {
+    mainWindow.webContents.openDevTools();
+    url = 'http://localhost:4545';
+  }
 
   // and load the index.html of the app.
-  mainWindow.loadURL('http://localhost:4545');
+  mainWindow.loadURL(url);
 
   mainWindow.webContents.session.on("page-title-updated", event => event.preventDefault());
   // Open the DevTools.

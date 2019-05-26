@@ -5,8 +5,9 @@
   "description": "A desktop client for Google PlayBooks",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "dist": "electron-builder",
+    "start": "set DEV_URL=http://localhost:4545&& set DEV_MODE=1&& electron .",
+    "pack": "electron-builder",
+    "dist": "rm -fr ./dist && npm run build && electron-builder",
     "build": "webpack",
     "build:watch": "webpack --watch",
     "serve": "webpack-dev-server --open --colors --watch --content-base=./build",
@@ -26,6 +27,11 @@
   ],
   "build": {
     "appId": "gbooksapp",
+    "files": [
+      "main.js",
+      "build/",
+      "node_modules"
+    ],
     "dmg": {
       "contents": [
         {
@@ -48,7 +54,7 @@
     },
     "win": {
       "target": "NSIS",
-      "icon": "dist/icon.ico"
+      "icon": "icon.ico"
     }
   },
   "devDependencies": {
