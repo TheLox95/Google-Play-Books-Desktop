@@ -63,7 +63,7 @@
     "awesome-typescript-loader": "^5.2.1",
     "concurrently": "^3.6.1",
     "css-loader": "^0.28.11",
-    "electron": "^1.7.16",
+    "electron": "^7.2.4",
     "electron-builder": "^19.56.2",
     "electron-builder-squirrel-windows": "^19.56.0",
     "file-loader": "^1.1.11",
